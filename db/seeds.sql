@@ -1,0 +1,20 @@
+INSERT INTO department (name)
+VALUES
+('Management')
+('Sales team')
+('Front desk')
+('HR')
+('Accountants')
+('Quality Assurance')
+('Supplier Relations')
+
+INSERT INTO role (title, salary, department_id)
+VALUES
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
+('Regional Manager', )
