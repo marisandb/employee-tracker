@@ -150,7 +150,7 @@ const promptUpdateRole = [
         type: 'list',
         name: 'roleChoice',
         message: "What should this employee's new role be?",
-        choices: ['Host', 'Waitstaff', 'Bartender', 'Barback', 'Line Cook', 'Dishwasher', 'Prep Cook', 'Chef', 'Shift Supervisor', 'Assistant Manager', 'General Manager', 'Accountant', 'Marketing Rep'],
+        choices: ['Regional Manager', 'Salesman', 'Head Salesman', 'Receptionist', 'Human Resources Representative', 'Accountant', 'Head Accountant', 'Customer Service Representative'],
         validate: roleChoice => {
             if (roleChoice) {
                 return true;
@@ -179,7 +179,12 @@ function viewRoles () {
         .catch(console.table)
 }
 function viewEmployees () {
-    db.promise().query("SELECT * FROM  employees")
+    db.promise().query(`SELECT * FROM employee
+    JOIN roles
+    ON role_id = roles.id
+    JOIN department
+    ON department_id = department.id
+    ORDER BY employee.id ASC;`)
         .then(([rows,fields]) => {
             console.table(rows);
             returnQuestions();
@@ -192,7 +197,7 @@ function addDepartment () {
     .then ( response => {
         let queryString = `
         INSERT INTO department (name) 
-        VALUES ('` + response.name + `');`
+        VALUES ('` + response.departmentName + `');`
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
             console.log("Your new department has been added!")
@@ -222,7 +227,7 @@ function addRole () {
         }
 
         let queryString = `
-        INSERT INTO roles (job_title, salary, department_id) 
+        INSERT INTO roles (title, salary, department_id) 
         VALUES ('` + response.roleName + `', '` + response.salaryInput + `', ` + response.departmentInput + `);`
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
@@ -232,6 +237,7 @@ function addRole () {
         .catch(console.table)
     })
 }
+
 function addEmployee () {
     return inquirer
     .prompt(promptAddEmployee)
@@ -323,8 +329,8 @@ function updateEmployeeRole () {
             response.roleChoice = 8
         }
         let queryString = `
-        UPDATE employee SET role_id = ` + response.roleChoice + `,
-        WHERE employee_id = ` + response.chooseEmployee + `;`
+        UPDATE employee SET role_id = ` + response.roleChoice + `
+        WHERE id = ` + response.chooseEmployee + `;`
 
         db.promise().query(queryString)
         .then( ([rows, fields]) => {
